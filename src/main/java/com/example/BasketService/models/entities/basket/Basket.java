@@ -1,4 +1,4 @@
-package com.example.BasketService.models.entities;
+package com.example.BasketService.models.entities.basket;
 
 
 import com.example.BasketService.models.dto.ProductDTO;
