@@ -11,6 +11,7 @@ public class Producer {
     @Value("${bs.rabbit.routing.name}")
     private String routingName;
 
+
     @Value("${bs.rabbit.exchange.name}")
     private String exchangeName;
 
