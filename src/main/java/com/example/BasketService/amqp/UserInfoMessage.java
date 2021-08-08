@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,6 +15,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class UserInfoMessage implements Serializable {
     String id;
-    UserDTO message;
+    List<Long> message;
 
 }

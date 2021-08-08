@@ -1,7 +1,8 @@
 package com.example.BasketService.controller;
 
-import com.example.BasketService.models.entities.basket.Basket;
+import com.example.BasketService.models.entities.Basket;
 import com.example.BasketService.service.IBasketService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +21,9 @@ public class BasketController {
     }
 
 
-/*    @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getAllUsersForProduct(@PathVariable(value = "productId") final Long productId){
-        ResponseEntity<?> allUsersForProduct = basketService.getAllUsersForProduct(productId);
-        return ResponseEntity.status(HttpStatus.OK).body(allUsersForProduct);
-    }*/
+    @GetMapping("/{productId}")
+    public ResponseEntity<?> getAllUsersForProduct(@PathVariable Long productId){
+       return new ResponseEntity(basketService.getAllUsersForProduct(productId), HttpStatus.OK);
+
+    }
 }
