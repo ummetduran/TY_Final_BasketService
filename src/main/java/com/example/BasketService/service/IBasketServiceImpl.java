@@ -4,34 +4,24 @@ import com.example.BasketService.amqp.Producer;
 import com.example.BasketService.amqp.UserInfoMessage;
 import com.example.BasketService.models.dto.ProductDTO;
 import com.example.BasketService.models.entities.Basket;
-
 import com.example.BasketService.repository.BasketRepository;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.Example;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.query.Criteria;
-
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 
 @Service
-@Configuration
 public class IBasketServiceImpl implements IBasketService{
 
     private final BasketRepository basketRepository;
@@ -58,9 +48,16 @@ public class IBasketServiceImpl implements IBasketService{
         for(Basket basket: basketList){
             userIdList.add(basket.getUserId());
         }
-        UserInfoMessage message = UserInfoMessage.builder().id(UUID.randomUUID().toString()).message(userIdList).build();
-        producer.sendToQueue(message);
+        System.out.println(userIdList);
+
         return userIdList;
+    }
+
+    @Override
+    public void createUserInfoMessageToUserService(ProductDTO productDTO) {
+
+        List<Long> userIdList = getAllUsersForProduct(productDTO.getProductId());
+        System.out.println(userIdList.get(0));
     }
 
 
