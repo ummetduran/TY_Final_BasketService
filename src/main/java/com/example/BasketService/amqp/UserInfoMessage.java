@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserInfoMessage implements Serializable {
-    String id;
-    List<Long> message;
+
+    List<Long> userIdList;
 
 }

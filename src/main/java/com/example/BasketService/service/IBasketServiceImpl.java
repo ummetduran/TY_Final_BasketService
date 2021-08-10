@@ -1,38 +1,34 @@
 package com.example.BasketService.service;
 
 import com.example.BasketService.amqp.Producer;
+import com.example.BasketService.amqp.UserIdForInfoProducer;
 import com.example.BasketService.amqp.UserInfoMessage;
 import com.example.BasketService.models.dto.ProductDTO;
 import com.example.BasketService.models.entities.Basket;
 import com.example.BasketService.repository.BasketRepository;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 
 @Service
 public class IBasketServiceImpl implements IBasketService{
 
     private final BasketRepository basketRepository;
-    private final Producer producer;
+    private final UserIdForInfoProducer producer;
+
 
 
     @Autowired
-    public IBasketServiceImpl(BasketRepository basketRepository, Producer producer) {
+    public IBasketServiceImpl(BasketRepository basketRepository, UserIdForInfoProducer producer) {
         this.basketRepository = basketRepository;
-
         this.producer = producer;
+
     }
 
     @Override
@@ -48,8 +44,11 @@ public class IBasketServiceImpl implements IBasketService{
         for(Basket basket: basketList){
             userIdList.add(basket.getUserId());
         }
-        System.out.println(userIdList);
 
+        UserInfoMessage message = new UserInfoMessage();
+        message.setUserIdList(userIdList);
+        System.out.println(message);
+        producer.sendToQueue(message);
         return userIdList;
     }
 

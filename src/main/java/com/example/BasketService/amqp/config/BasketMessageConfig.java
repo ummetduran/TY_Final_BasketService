@@ -1,3 +1,4 @@
+
 package com.example.BasketService.amqp.config;
 
 import org.springframework.amqp.core.Binding;
@@ -8,18 +9,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
 public class BasketMessageConfig {
-    @Value("${bs.rabbit.queue.name}")
+    @Value("${bs.rabbit.queue.name.user-service}")
     private String queueName;
 
-    @Value("${bs.rabbit.routing.name}")
+    @Value("${bs.rabbit.routing.name.user-service}")
     private String routingName;
 
-    @Value("${bs.rabbit.exchange.name}")
+    @Value("${bs.rabbit.exchange.name.user-service}")
     private String exchangeName;
-
 
     @Bean
     public Queue queue() {
@@ -36,3 +35,4 @@ public class BasketMessageConfig {
         return BindingBuilder.bind(queue).to(directExchange).with(routingName);
     }
 }
+
