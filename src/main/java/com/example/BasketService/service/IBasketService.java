@@ -1,5 +1,7 @@
 package com.example.BasketService.service;
 
+import com.example.BasketService.models.dto.BasketProductsDTO;
+import com.example.BasketService.models.dto.DeleteProductDTO;
 import com.example.BasketService.models.dto.ProductDTO;
 import com.example.BasketService.models.entities.Basket;
 import org.springframework.http.ResponseEntity;
@@ -8,8 +10,10 @@ public interface IBasketService {
     ResponseEntity<?> addBasket(Basket basket);
 
 
-
+    Basket addProductToBasket(Basket products, Long userId);
    List<Long> getAllUsersForProduct(Long productId);
 
     void createUserInfoMessageToUserService(ProductDTO product);
+
+    Basket deleteProductFromBasket(DeleteProductDTO product, Long userId);
 }
