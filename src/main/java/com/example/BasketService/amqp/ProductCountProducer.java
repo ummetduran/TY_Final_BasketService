@@ -10,19 +10,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductCountProducer {
 
-    @Value("${bs.rabbit.routing.name}")
+    @Value("${bs.rabbit.routing.name.product-service}")
     private String routingName;
 
 
-    @Value("${bs.rabbit.exchange.name}")
+    @Value("${bs.rabbit.exchange.name.product-service}")
     private String exchangeName;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    public void sendToQueue(BasketProductsDTO product){
-        System.out.println("Sended : "+ product);
-        rabbitTemplate.convertAndSend(exchangeName, routingName, product);
+    public void sendToQueue(ProductProcessMessage message){
+        System.out.println("Sended : "+ message);
+        rabbitTemplate.convertAndSend(exchangeName, routingName, message);
     }
 
 }

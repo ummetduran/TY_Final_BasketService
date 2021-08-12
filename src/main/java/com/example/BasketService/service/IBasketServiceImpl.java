@@ -1,7 +1,9 @@
 package com.example.BasketService.service;
 
 import com.example.BasketService.amqp.ProductCountProducer;
+import com.example.BasketService.amqp.ProductProcessMessage;
 import com.example.BasketService.amqp.UserIdForInfoProducer;
+import com.example.BasketService.models.ProcessType;
 import com.example.BasketService.models.UserInfoMessage;
 import com.example.BasketService.models.dto.BasketInfo;
 import com.example.BasketService.models.dto.BasketProductsDTO;
@@ -54,11 +56,11 @@ public class IBasketServiceImpl implements IBasketService {
             prod.setPrice(products.getProducts().get(0).getPrice());
             int index = getIndexOf(productInBasket, products.getProducts().get(0).getProductId());
             System.out.println(index);
-            prod.setQuantityInBasket(productInBasket.get(index).getQuantityInBasket());
+
+            if(index != -1)
+                prod.setQuantityInBasket(productInBasket.get(index).getQuantityInBasket());
 
             if (productInBasket.contains(prod)) {
-
-
                 for (int i = 0; i < productInBasket.size(); i++) {
                     if (productInBasket.get(i).getProductId() == products.getProducts().get(0).getProductId()) {
                         int quantity = productInBasket.get(i).getQuantityInBasket();
@@ -89,7 +91,8 @@ public class IBasketServiceImpl implements IBasketService {
         basketRepository.save(basket);
         System.out.println(basket);
         BasketProductsDTO bpdto = products.getProducts().get(0);
-        productCountProducer.sendToQueue(bpdto);
+        ProductProcessMessage message = new ProductProcessMessage(bpdto, "ADD");
+        productCountProducer.sendToQueue(message);
         return basket;
     }
 
@@ -113,6 +116,11 @@ public class IBasketServiceImpl implements IBasketService {
         basket.setProducts(productInBasket);
         basketRepository.deleteByUserId(userId);
         basketRepository.save(basket);
+        BasketProductsDTO deletedProduct = new BasketProductsDTO();
+        deletedProduct.setProductId(product.getProductId());
+        deletedProduct.setQuantityInBasket(product.getCount());
+        ProductProcessMessage message = new ProductProcessMessage(deletedProduct, "DELETE");
+        productCountProducer.sendToQueue(message);
         return basket;
     }
 
