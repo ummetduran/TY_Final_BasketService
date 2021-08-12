@@ -1,4 +1,4 @@
-package com.example.BasketService.amqp;
+package com.example.BasketService.models;
 
 import com.example.BasketService.models.dto.UserDTO;
 import lombok.AllArgsConstructor;

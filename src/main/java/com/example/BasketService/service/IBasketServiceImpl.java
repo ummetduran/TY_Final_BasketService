@@ -1,8 +1,8 @@
 package com.example.BasketService.service;
 
-import com.example.BasketService.amqp.Producer;
+import com.example.BasketService.amqp.ProductCountProducer;
 import com.example.BasketService.amqp.UserIdForInfoProducer;
-import com.example.BasketService.amqp.UserInfoMessage;
+import com.example.BasketService.models.UserInfoMessage;
 import com.example.BasketService.models.dto.BasketInfo;
 import com.example.BasketService.models.dto.BasketProductsDTO;
 import com.example.BasketService.models.dto.DeleteProductDTO;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -24,14 +23,16 @@ import java.util.List;
 public class IBasketServiceImpl implements IBasketService {
 
     private final BasketRepository basketRepository;
-    private final UserIdForInfoProducer producer;
+    private final UserIdForInfoProducer userInfoProducer;
+    private final ProductCountProducer productCountProducer;
 
 
     @Autowired
-    public IBasketServiceImpl(BasketRepository basketRepository, UserIdForInfoProducer producer) {
+    public IBasketServiceImpl(BasketRepository basketRepository, UserIdForInfoProducer userInfoProducer, ProductCountProducer productCountProducer) {
         this.basketRepository = basketRepository;
-        this.producer = producer;
+        this.userInfoProducer = userInfoProducer;
 
+        this.productCountProducer = productCountProducer;
     }
 
     @Override
@@ -51,11 +52,13 @@ public class IBasketServiceImpl implements IBasketService {
             prod.setProductId(products.getProducts().get(0).getProductId());
             prod.setProductName(products.getProducts().get(0).getProductName());
             prod.setPrice(products.getProducts().get(0).getPrice());
-
             int index = getIndexOf(productInBasket, products.getProducts().get(0).getProductId());
             System.out.println(index);
             prod.setQuantityInBasket(productInBasket.get(index).getQuantityInBasket());
+
             if (productInBasket.contains(prod)) {
+
+
                 for (int i = 0; i < productInBasket.size(); i++) {
                     if (productInBasket.get(i).getProductId() == products.getProducts().get(0).getProductId()) {
                         int quantity = productInBasket.get(i).getQuantityInBasket();
@@ -85,6 +88,8 @@ public class IBasketServiceImpl implements IBasketService {
         basketRepository.deleteByUserId(userId);
         basketRepository.save(basket);
         System.out.println(basket);
+        BasketProductsDTO bpdto = products.getProducts().get(0);
+        productCountProducer.sendToQueue(bpdto);
         return basket;
     }
 
@@ -122,7 +127,7 @@ public class IBasketServiceImpl implements IBasketService {
         UserInfoMessage message = new UserInfoMessage();
         message.setUserIdList(userIdList);
         System.out.println(message);
-        producer.sendToQueue(message);
+        userInfoProducer.sendToQueue(message);
         return userIdList;
     }
 
