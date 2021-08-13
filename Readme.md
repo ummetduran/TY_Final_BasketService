@@ -8,8 +8,8 @@
   docker start rabbitmq
 
 - DB Configuration
-  spring.data.mongodb.host=localhost
-  spring.data.mongodb.database=baskets
+  - spring.data.mongodb.host=localhost
+  - spring.data.mongodb.database=baskets
 
 
 - End Points
