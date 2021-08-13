@@ -20,7 +20,7 @@
     }
                                                        
   - (POST) Add Products to Basket -> localhost:4443/basket/3   ->  {userId}
-  - {
+    - {
   "products":[{
   "productId":3,
   "productName":"Product 3",
@@ -31,7 +31,7 @@
   }
                                                         
   - (DELETE) Delete Product in Basket -> localhost:4443/basket/5 -> {userId}
-  - {
+    - {
   "productId":3,
   "count":1
   }
