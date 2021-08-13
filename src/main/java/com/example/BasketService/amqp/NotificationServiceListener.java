@@ -19,7 +19,8 @@ public class NotificationServiceListener {
     @RabbitListener(queues = "${bs.rabbit.queues.notification-for-baskets}")
     public void notificationListener(ProductDTO message){
         System.out.println(message);
-        basketService.createUserInfoMessageToUserService(message);
+
+        basketService.getAllUsersForProduct(message.getProductId(), "PRICECHANGE");
     }
 
 }

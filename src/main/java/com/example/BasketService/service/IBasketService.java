@@ -11,9 +11,9 @@ public interface IBasketService {
 
 
     Basket addProductToBasket(Basket products, Long userId);
-   List<Long> getAllUsersForProduct(Long productId);
+   List<Long> getAllUsersForProduct(Long productId, String type);
 
-    void createUserInfoMessageToUserService(ProductDTO product);
+
 
     Basket deleteProductFromBasket(DeleteProductDTO product, Long userId);
 }

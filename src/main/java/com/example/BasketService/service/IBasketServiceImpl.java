@@ -3,12 +3,12 @@ package com.example.BasketService.service;
 import com.example.BasketService.amqp.ProductCountProducer;
 import com.example.BasketService.amqp.ProductProcessMessage;
 import com.example.BasketService.amqp.UserIdForInfoProducer;
-import com.example.BasketService.models.ProcessType;
+import com.example.BasketService.amqp.UserInfoForStockProducer;
 import com.example.BasketService.models.UserInfoMessage;
 import com.example.BasketService.models.dto.BasketInfo;
 import com.example.BasketService.models.dto.BasketProductsDTO;
 import com.example.BasketService.models.dto.DeleteProductDTO;
-import com.example.BasketService.models.dto.ProductDTO;
+import com.example.BasketService.models.dto.UserInfoForStockMessage;
 import com.example.BasketService.models.entities.Basket;
 import com.example.BasketService.repository.BasketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +27,15 @@ public class IBasketServiceImpl implements IBasketService {
     private final BasketRepository basketRepository;
     private final UserIdForInfoProducer userInfoProducer;
     private final ProductCountProducer productCountProducer;
+    private final UserInfoForStockProducer userInfoForStockProducer;
 
 
     @Autowired
-    public IBasketServiceImpl(BasketRepository basketRepository, UserIdForInfoProducer userInfoProducer, ProductCountProducer productCountProducer) {
+    public IBasketServiceImpl(BasketRepository basketRepository, UserIdForInfoProducer userInfoProducer, ProductCountProducer productCountProducer, UserInfoForStockProducer userInfoForStockProducer) {
         this.basketRepository = basketRepository;
         this.userInfoProducer = userInfoProducer;
-
         this.productCountProducer = productCountProducer;
+        this.userInfoForStockProducer = userInfoForStockProducer;
     }
 
     @Override
@@ -85,7 +86,13 @@ public class IBasketServiceImpl implements IBasketService {
                 araToplam += product.getPrice() * product.getQuantityInBasket();
             }
         }
-        BasketInfo info = new BasketInfo(araToplam, 5.99);
+        double kargo =0;
+        if (araToplam<100){
+            kargo = 4.99;
+        }else{
+            kargo=0;
+        }
+        BasketInfo info = new BasketInfo(araToplam, kargo);
         basket.setBasketInfo(info);
         basketRepository.deleteByUserId(userId);
         basketRepository.save(basket);
@@ -111,7 +118,13 @@ public class IBasketServiceImpl implements IBasketService {
         for(BasketProductsDTO productDTO: productInBasket){
             araToplam += productDTO.getPrice()* productDTO.getQuantityInBasket();
         }
-        BasketInfo info = new BasketInfo(araToplam, 5.99);
+        double kargo =0;
+        if (araToplam<100){
+            kargo = 4.99;
+        }else{
+            kargo=0;
+        }
+        BasketInfo info = new BasketInfo(araToplam, kargo);
         basket.setBasketInfo(info);
         basket.setProducts(productInBasket);
         basketRepository.deleteByUserId(userId);
@@ -124,7 +137,8 @@ public class IBasketServiceImpl implements IBasketService {
         return basket;
     }
 
-    public List<Long> getAllUsersForProduct(Long productId) {
+
+    public List<Long> getAllUsersForProduct(Long productId, String type) {
         List<Basket> basketList = new ArrayList<Basket>();
         List<Long> userIdList = new ArrayList<Long>();
         basketList = basketRepository.findUsersIdByProductId(productId);
@@ -135,16 +149,22 @@ public class IBasketServiceImpl implements IBasketService {
         UserInfoMessage message = new UserInfoMessage();
         message.setUserIdList(userIdList);
         System.out.println(message);
-        userInfoProducer.sendToQueue(message);
+        if(type.equalsIgnoreCase("PRICECHANGE")) {
+            userInfoProducer.sendToQueue(message);
+        }else if (type.equalsIgnoreCase("3") ||type.equalsIgnoreCase("0") ){
+            UserInfoForStockMessage stockmessage = new UserInfoForStockMessage();
+            stockmessage.setUserIdList(userIdList);
+            stockmessage.setProductId(productId);
+            stockmessage.setMessageType(type);
+
+            userInfoForStockProducer.sendToQueue(stockmessage);
+            System.out.println(stockmessage);
+        }
+
         return userIdList;
     }
 
-    @Override
-    public void createUserInfoMessageToUserService(ProductDTO productDTO) {
 
-        List<Long> userIdList = getAllUsersForProduct(productDTO.getProductId());
-        System.out.println(userIdList.get(0));
-    }
 
 
 

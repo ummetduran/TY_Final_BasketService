@@ -25,7 +25,7 @@ public class BasketController {
 
     @GetMapping("/{productId}")
     public ResponseEntity getAllUsersForProduct(@PathVariable Long productId){
-       return new ResponseEntity(basketService.getAllUsersForProduct(productId), HttpStatus.OK);
+       return new ResponseEntity(basketService.getAllUsersForProduct(productId,""), HttpStatus.OK);
     }
 
     @PostMapping("/{userId}")

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class BasketMessageConfig {
+public class UserMessageConfig {
     @Value("${bs.rabbit.queue.name.user-service}")
     private String queueName;
 
