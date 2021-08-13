@@ -14,12 +14,12 @@
 
 - End Points
     
-  -(POST) Add Basket -> localhost:4443/basket
+  - (POST) Add Basket -> localhost:4443/basket
     {
     "userId":3
     }
                                                         {userId}
-  -(POST) Add Products to Basket -> localhost:4443/basket/3
+  - (POST) Add Products to Basket -> localhost:4443/basket/3
   {
   "products":[{
   "productId":3,
@@ -30,10 +30,10 @@
   ]
   }
                                                         {userId}
-  -(DELETE) Delete Product in Basket -> localhost:4443/basket/5
+  - (DELETE) Delete Product in Basket -> localhost:4443/basket/5
   {
   "productId":3,
   "count":1
   }
                                                                 {proudctId} 
-  -(GET) Get Users by Who Has this Product ->localhost:4443/basket/3
+  - (GET) Get Users by Who Has this Product ->localhost:4443/basket/3
