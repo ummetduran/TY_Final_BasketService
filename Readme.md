@@ -18,8 +18,8 @@
     - {
     "userId":3
     }
-                                                        {userId}
-  - (POST) Add Products to Basket -> localhost:4443/basket/3
+                                                       
+  - (POST) Add Products to Basket -> localhost:4443/basket/3   ->  {userId}
   - {
   "products":[{
   "productId":3,
