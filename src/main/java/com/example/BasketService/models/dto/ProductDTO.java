@@ -7,15 +7,20 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProductDTO implements Serializable {
 
     private  Long productId;
 
-    private String productName;
+    private Double oldPrice;
 
-    private Double price;
+    private Double newPrice;
 
-    private Integer quantityInBasket;
+    @Override
+    public String toString() {
+        return "ProductDTO{" +
+                "productId=" + productId +
+                ", oldPrice=" + oldPrice +
+                ", newPrice=" + newPrice +
+                '}';
+    }
 }

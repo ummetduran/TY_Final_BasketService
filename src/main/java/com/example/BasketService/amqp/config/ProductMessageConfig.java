@@ -8,26 +8,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
-public class BasketMessageConfig {
-    @Value("${bs.rabbit.queue.name}")
+public class ProductMessageConfig {
+    @Value("${bs.rabbit.queue.name.product-service}")
     private String queueName;
 
-    @Value("${bs.rabbit.routing.name}")
+    @Value("${bs.rabbit.routing.name.product-service}")
     private String routingName;
-
-    @Value("${bs.rabbit.exchange.name}")
+    @Value("${bs.rabbit.exchange.name.product-service}")
     private String exchangeName;
 
-
     @Bean
-    public Queue queue() {
+    public Queue queue(){
         return new Queue(queueName, true);
     }
 
     @Bean
-    public DirectExchange directExchange() {
+    public DirectExchange directExchange(){
         return new DirectExchange(exchangeName);
     }
 
